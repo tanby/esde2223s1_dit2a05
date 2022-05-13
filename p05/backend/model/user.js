@@ -13,9 +13,9 @@ var userDB = {
             else{
                 console.log("***Connected!");
 				
-                var sql = `SELECT userid,email,username FROM user WHERE userid = '${userid}'`;
+                var sql = `SELECT userid,email,username FROM user WHERE userid = ?`;
 			
-				conn.query(sql, [], function(err, result){
+				conn.query(sql, [userid], function(err, result){
 
                     conn.end();
                     if(err){

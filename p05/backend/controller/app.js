@@ -6,6 +6,9 @@ var cors = require('cors');
 var validator = require('validator');
 var validateFn=require('../validation/validationFn');
 
+// import furniture model
+var furniture = require("../model/furniture.js")
+
 app.options('*', cors());
 app.use(cors());
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -14,11 +17,31 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(bodyParser.json());
 app.use(urlencodedParser);
 
+// reusing validation code for userid. 
+// so parameter has to reuse userid name
+// not good for documentation purpose,
+app.get('/furniture/:userid', validateFn.validateUserid, function (req, res) {
+    var id = req.params.userid;
+
+    furniture.getFurniture(id, function (err, result) {
+        if (!err) {
+            // with stored procedure
+            // return 1st item in result array
+            res.send(result[0]);
+        } else {
+
+            res.status(500).send("Some error");
+        }
+    });
+});
+
 app.get('/user/:userid', function (req, res) {
     var id = req.params.userid;
 
     user.getUser(id, function (err, result) {
         if (!err) {
+            // sanitize
+            //result = validateFn.sanitizeResult(result)
             res.send(result);
         } else {
 
@@ -41,7 +64,7 @@ app.get('/user', function (req, res) {
 
 
 //POST (INSERT) /user
-app.post('/user',function (req, res) {
+app.post('/user', validateFn.validateRegister,  function (req, res) {
     var username = req.body.username;
     var email = req.body.email;
     var password = req.body.password;
