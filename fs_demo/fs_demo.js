@@ -1,16 +1,21 @@
 const fs = require('fs');
 
-fs.readdir("./temp", {withFileTypes:true}, (err, files)=>{
-    if(err){
-        console.log(err);
-    }
-    else{
-        //console.log(files);
-
-        for(var i = 0; i<files.length; i++){
-            console.log(files[i].name);
-            console.log(files[i].isDirectory());
+// read the content of "temp" directory
+fs.readdir("./temp", 
+    {withFileTypes:true}, //-- return file types in result
+    (err, files)=>{
+        if(err){
+            console.log(err);
+        }
+        else{
+            //console.log(files);
+            
+            for(var i = 0; i<files.length; i++){
+                // print file or folder name
+                console.log(files[i].name);
+                // check if file or folder
+                console.log(files[i].isDirectory());
+            }
         }
     }
-
-})
+)
